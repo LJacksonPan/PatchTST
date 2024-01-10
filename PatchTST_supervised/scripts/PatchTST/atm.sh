@@ -5,16 +5,16 @@ fi
 if [ ! -d "./logs/LongForecasting" ]; then
     mkdir ./logs/LongForecasting
 fi
-seq_len=336
+seq_len=288
 model_name=PatchTST
 
-root_path_name=./dataset/
+root_path_name=./dataset/atm/
 data_path_name=test.csv
 model_id_name=test
 data_name=custom
 
 random_seed=2021
-for pred_len in 96 192 336 720
+for pred_len in 36 72
 do
     python -u run_longExp.py \
       --random_seed $random_seed \

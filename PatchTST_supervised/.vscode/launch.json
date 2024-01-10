@@ -10,7 +10,7 @@
             "args": [
                 "--random_seed", "2021",
                 "--is_training", "1",
-                "--root_path", "./dataset/",
+                "--root_path", "./dataset/atm/",
                 "--data_path", "test.csv",
                 "--model_id", "test_336_${input:predLen}",
                 "--model", "PatchTST",
