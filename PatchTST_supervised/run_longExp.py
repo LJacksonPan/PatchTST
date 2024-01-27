@@ -27,6 +27,9 @@ if __name__ == '__main__':
     parser.add_argument('--freq', type=str, default='h',
                         help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
+    parser.add_argument('--train_ratio', type=float, default=0.7, help='train ratio of the dataset')
+    parser.add_argument('--test_ratio', type=float, default=0.2, help='test ratio of the dataset')
+    parser.add_argument('--inc_quaternion', type=bool, default=True, help='use quaternion rotations')
 
     # forecasting task
     parser.add_argument('--seq_len', type=int, default=96, help='input sequence length')
@@ -117,7 +120,7 @@ if __name__ == '__main__':
     if args.is_training:
         for ii in range(args.itr):
             # setting record of experiments
-            setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}'.format(
+            setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_ratio{}_use_q{}'.format(
                 args.model_id,
                 args.model,
                 args.data,
@@ -133,7 +136,9 @@ if __name__ == '__main__':
                 args.factor,
                 args.embed,
                 args.distil,
-                args.des,ii)
+                args.des,ii,
+                args.train_ratio,
+                args.inc_quaternion)
 
             exp = Exp(args)  # set experiments
             print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
@@ -164,7 +169,9 @@ if __name__ == '__main__':
                                                                                                     args.factor,
                                                                                                     args.embed,
                                                                                                     args.distil,
-                                                                                                    args.des, ii)
+                                                                                                    args.des, ii,
+                                                                                                    args.train_ratio,
+                                                                                                    args.inc_quaternion)
 
         exp = Exp(args)  # set experiments
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
