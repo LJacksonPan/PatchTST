@@ -38,7 +38,7 @@ def adjust_learning_rate(optimizer, scheduler, epoch, args, printout=True):
 
 
 class EarlyStopping:
-    def __init__(self, patience=7, verbose=False, delta=0):
+    def __init__(self, patience=7, verbose=False, delta=0, args=None):
         self.patience = patience
         self.verbose = verbose
         self.counter = 0
@@ -46,6 +46,7 @@ class EarlyStopping:
         self.early_stop = False
         self.val_loss_min = np.Inf
         self.delta = delta
+        self.args = args
 
     def __call__(self, val_loss, model, path):
         score = -val_loss
@@ -66,6 +67,14 @@ class EarlyStopping:
         if self.verbose:
             print(f'Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...')
         torch.save(model.state_dict(), path + '/' + 'checkpoint.pth')
+        # (batch_size, seq_len, n_features)
+        
+        dummy_in = torch.randn(self.args.batch_size, self.args.seq_len, self.args.enc_in).cuda()
+        if self.args.inc_quaternion:
+            entries = ['MainCam_x', 'MainCam_y', 'MainCam_z', 'Quaternion_x', 'Quaternion_y', 'Quaternion_z', 'Quaternion_w', 'LeftController_x', 'LeftController_y', 'LeftController_z', 'Quaternion_x', 'Quaternion_y', 'Quaternion_z', 'Quaternion_w', 'RightController_x', 'RightController_y', 'RightController_z', 'Quaternion_x', 'Quaternion_y', 'Quaternion_z', 'Quaternion_w']
+        else:
+            entries = ['MainCam_x', 'MainCam_y', 'MainCam_z', 'LeftController_x', 'LeftController_y', 'LeftController_z', 'RightController_x', 'RightController_y', 'RightController_z']
+        torch.onnx.export(model, dummy_in, path + '/' + 'checkpoint.onnx', input_names=['input'], output_names=['output'])
         self.val_loss_min = val_loss
 
 

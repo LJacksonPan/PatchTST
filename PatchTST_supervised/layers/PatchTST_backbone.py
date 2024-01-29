@@ -57,6 +57,21 @@ class PatchTST_backbone(nn.Module):
             self.head = Flatten_Head(self.individual, self.n_vars, self.head_nf, target_window, head_dropout=head_dropout)
         
     
+    def manual_patch(self, z):
+            # Assuming z is of shape [bs, nvars, seq_len]
+            bs, nvars, seq_len = z.shape
+            patches = []
+
+            for i in range(0, seq_len - self.patch_len + 1, self.stride):
+                patch = z[:, :, i:i + self.patch_len]  # shape: [bs, nvars, patch_len]
+                patches.append(patch)
+
+            # Stacking patches to get a shape similar to what unfold would produce
+            patches = torch.stack(patches, dim=-1)  # shape: [bs, nvars, patch_len, patch_num]
+
+            return patches.permute(0, 1, 3, 2)  # Permuting to get the desired shape: [bs, nvars, patch_num, patch_len]
+
+    
     def forward(self, z):                                                                   # z: [bs x nvars x seq_len]
         # norm
         if self.revin: 
@@ -67,7 +82,7 @@ class PatchTST_backbone(nn.Module):
         # do patching
         if self.padding_patch == 'end':
             z = self.padding_patch_layer(z)
-        z = z.unfold(dimension=-1, size=self.patch_len, step=self.stride)                   # z: [bs x nvars x patch_num x patch_len]
+        z = self.manual_patch(z)                # z: [bs x nvars x patch_num x patch_len]
         z = z.permute(0,1,3,2)                                                              # z: [bs x nvars x patch_len x patch_num]
         
         # model
