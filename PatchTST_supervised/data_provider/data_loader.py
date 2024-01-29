@@ -192,7 +192,9 @@ class Dataset_ETT_minute(Dataset):
 class Dataset_Custom(Dataset):
     def __init__(self, root_path, flag='train', size=None,
                  features='S', data_path='ETTh1.csv',
-                 target='OT', scale=True, timeenc=0, freq='h', train_ratio=0.7, test_ratio=0.2, inc_quaternion = True):
+                 target='OT', scale=True, timeenc=0, freq='h', 
+                 train_ratio=0.7, test_ratio=0.2, inc_quaternion = True,
+                 excl_qua_out = False):
         # size [seq_len, label_len, pred_len]
         # info
         if size == None:
@@ -217,6 +219,7 @@ class Dataset_Custom(Dataset):
         self.test_ratio = test_ratio
         self.inc_quaternion = inc_quaternion
         self.quaternion_columns = ['Quaternion_x', 'Quaternion_y', 'Quaternion_z', 'Quaternion_w']
+        self.excl_qua_out = excl_qua_out
         # print(self.test_ratio)
 
         self.root_path = root_path
@@ -239,6 +242,10 @@ class Dataset_Custom(Dataset):
 
         for file in files:
             df_raw = pd.read_csv(os.path.join(self.root_path, file))
+            df_output = df_raw.copy()
+
+            if not self.inc_quaternion or self.excl_qua_out:
+                df_output = df_output.drop(columns=[col for col in df_output if col in self.quaternion_columns])
 
             if not self.inc_quaternion:
                 df_raw = df_raw.drop(columns=[col for col in df_raw if col in self.quaternion_columns])
@@ -270,6 +277,13 @@ class Dataset_Custom(Dataset):
                 data = self.scaler.transform(df_data.values)
             else:
                 data = df_data.values
+            
+            if self.scale:
+                train_output_data = df_output[border1s[0]:border2s[0]]
+                self.scaler.fit(train_output_data.values)
+                output_data = self.scaler.transform(df_output.values)
+            else:
+                output_data = df_output.values
 
             # df_stamp = df_raw[['date']][border1:border2]
             # df_stamp['date'] = pd.to_datetime(df_stamp.date)
@@ -284,7 +298,7 @@ class Dataset_Custom(Dataset):
             #     data_stamp = data_stamp.transpose(1, 0)
 
             self.data_x = data[border1:border2]
-            self.data_y = data[border1:border2]
+            self.data_y = output_data[border1:border2]  # Output data
             # self.data_stamp = data_stamp
             self.data_stamp = df_raw[['DeltaTime']].values[border1:border2]
 

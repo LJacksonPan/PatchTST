@@ -30,6 +30,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_ratio', type=float, default=0.7, help='train ratio of the dataset')
     parser.add_argument('--test_ratio', type=float, default=0.2, help='test ratio of the dataset')
     parser.add_argument('--inc_quaternion', type=bool, default=True, help='use quaternion rotations')
+    parser.add_argument('--excl_qua_out', type=bool, default=False, help='exclude quaternion rotations from output')
 
     # forecasting task
     parser.add_argument('--seq_len', type=int, default=96, help='input sequence length')
@@ -120,7 +121,7 @@ if __name__ == '__main__':
     if args.is_training:
         for ii in range(args.itr):
             # setting record of experiments
-            setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_ratio{}_use_q{}'.format(
+            setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_ratio{}_use_q{}_exc_q_o{}'.format(
                 args.model_id,
                 args.model,
                 args.data,
@@ -138,7 +139,8 @@ if __name__ == '__main__':
                 args.distil,
                 args.des,ii,
                 args.train_ratio,
-                args.inc_quaternion)
+                args.inc_quaternion,
+                args.excl_qua_out)
 
             exp = Exp(args)  # set experiments
             print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
@@ -154,7 +156,7 @@ if __name__ == '__main__':
             torch.cuda.empty_cache()
     else:
         ii = 0
-        setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}'.format(args.model_id,
+        setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_ratio{}_use_q{}_exc_q_o{}'.format(args.model_id,
                                                                                                     args.model,
                                                                                                     args.data,
                                                                                                     args.features,
@@ -171,7 +173,8 @@ if __name__ == '__main__':
                                                                                                     args.distil,
                                                                                                     args.des, ii,
                                                                                                     args.train_ratio,
-                                                                                                    args.inc_quaternion)
+                                                                                                    args.inc_quaternion,
+                                                                                                    args.excl_qua_out)
 
         exp = Exp(args)  # set experiments
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))

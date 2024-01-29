@@ -43,5 +43,6 @@ do
       --train_ratio 0.75\
       --test_ratio 0.2\
       --inc_quaternion True\
+      --excl_qua_out False\
       --itr 1 --batch_size 128 --learning_rate 0.0001 >logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done
