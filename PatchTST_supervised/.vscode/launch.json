@@ -16,7 +16,7 @@
                 "--model", "PatchTST",
                 "--data", "custom",
                 "--features", "M",
-                "--seq_len", "144",
+                "--seq_len", "288",
                 "--pred_len", "${input:predLen}",
                 "--enc_in", "21",
                 "--e_layers", "3",
@@ -47,7 +47,7 @@
             "id": "predLen",
             "type": "pickString",
             "description": "Select the prediction length:",
-            "options": ["36", "192", "336", "720"],
+            "options": ["36", "72", "192", "336", "720"],
             "default": "36"
         }
     ],

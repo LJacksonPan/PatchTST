@@ -242,10 +242,10 @@ class Dataset_Custom(Dataset):
 
         for file in files:
             df_raw = pd.read_csv(os.path.join(self.root_path, file))
-            df_output = df_raw.copy()
+            df_output_raw = df_raw.copy()
 
             if not self.inc_quaternion or self.excl_qua_out:
-                df_output = df_output.drop(columns=[col for col in df_output if col in self.quaternion_columns])
+                df_output_raw = df_output_raw.drop(columns=[col for col in df_output_raw if col in self.quaternion_columns])
 
             if not self.inc_quaternion:
                 df_raw = df_raw.drop(columns=[col for col in df_raw if col in self.quaternion_columns])
@@ -266,6 +266,8 @@ class Dataset_Custom(Dataset):
             if self.features == 'M' or self.features == 'MS':
                 cols_data = df_raw.columns[1:]
                 df_data = df_raw[cols_data]
+                cols_out = df_output_raw.columns[1:]
+                df_out = df_output_raw[cols_out]
             elif self.features == 'S':
                 df_data = df_raw[[self.target]]
 
@@ -279,11 +281,11 @@ class Dataset_Custom(Dataset):
                 data = df_data.values
             
             if self.scale:
-                train_output_data = df_output[border1s[0]:border2s[0]]
+                train_output_data = df_out[border1s[0]:border2s[0]]
                 self.scaler.fit(train_output_data.values)
-                output_data = self.scaler.transform(df_output.values)
+                output_data = self.scaler.transform(df_out.values)
             else:
-                output_data = df_output.values
+                output_data = df_out.values
 
             # df_stamp = df_raw[['date']][border1:border2]
             # df_stamp['date'] = pd.to_datetime(df_stamp.date)
