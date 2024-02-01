@@ -5,7 +5,7 @@ fi
 if [ ! -d "./logs/LongForecasting" ]; then
     mkdir ./logs/LongForecasting
 fi
-seq_len=288
+seq_len=72
 model_name=PatchTST
 
 root_path_name=./dataset/atm/
@@ -14,7 +14,7 @@ model_id_name=test
 data_name=custom
 
 random_seed=2021
-for pred_len in 36 72
+for pred_len in 36 288
 do
     if [ "$inc_quaternion" = True ]; then
         enc_in=21
@@ -32,7 +32,6 @@ do
       --features M \
       --seq_len $seq_len \
       --pred_len $pred_len \
-    #   --enc_in 21 \
       --e_layers 3 \
       --n_heads 16 \
       --d_model 128 \
@@ -47,7 +46,7 @@ do
       --patience 20\
       --train_ratio 0.75\
       --test_ratio 0.2\
-      --inc_quaternion 0\
+      --inc_quaternion 1\
       --excl_qua_out 0\
       --itr 1 --batch_size 128 --learning_rate 0.0001 >logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done
