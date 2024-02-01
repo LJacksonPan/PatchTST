@@ -245,10 +245,10 @@ class Dataset_Custom(Dataset):
             df_output_raw = df_raw.copy()
 
             if not self.inc_quaternion or self.excl_qua_out:
-                df_output_raw = df_output_raw.drop(columns=[col for col in df_output_raw if col in self.quaternion_columns])
+                df_output_raw = df_output_raw.drop(columns=[col for col in df_output_raw if "Quaternion" in col])
 
             if not self.inc_quaternion:
-                df_raw = df_raw.drop(columns=[col for col in df_raw if col in self.quaternion_columns])
+                df_raw = df_raw.drop(columns=[col for col in df_raw if "Quaternion" in col])
 
             cols = list(df_raw.columns)
             # cols.remove(self.target)

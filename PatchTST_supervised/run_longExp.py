@@ -29,8 +29,8 @@ if __name__ == '__main__':
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
     parser.add_argument('--train_ratio', type=float, default=0.7, help='train ratio of the dataset')
     parser.add_argument('--test_ratio', type=float, default=0.2, help='test ratio of the dataset')
-    parser.add_argument('--inc_quaternion', type=bool, default=True, help='use quaternion rotations')
-    parser.add_argument('--excl_qua_out', type=bool, default=False, help='exclude quaternion rotations from output')
+    parser.add_argument('--inc_quaternion', type=int, default=1, help='use quaternion rotations')
+    parser.add_argument('--excl_qua_out', type=int, default=0, help='exclude quaternion rotations from output')
 
     # forecasting task
     parser.add_argument('--seq_len', type=int, default=96, help='input sequence length')

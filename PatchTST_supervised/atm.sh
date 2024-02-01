@@ -19,7 +19,7 @@ do
     if [ "$inc_quaternion" = True ]; then
         enc_in=21
     else
-        enc_in=12
+        enc_in=9
     fi
     python -u run_longExp.py \
       --random_seed $random_seed \
@@ -47,7 +47,7 @@ do
       --patience 20\
       --train_ratio 0.75\
       --test_ratio 0.2\
-      --inc_quaternion False\
-      --excl_qua_out False\
+      --inc_quaternion 0\
+      --excl_qua_out 0\
       --itr 1 --batch_size 128 --learning_rate 0.0001 >logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done
